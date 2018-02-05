@@ -4,7 +4,7 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.sctp.nio.NioSctpServerChannel;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
@@ -17,13 +17,13 @@ public class WebSocketServer {
         EventLoopGroup wokerGroup  = new NioEventLoopGroup();
         try{
             ServerBootstrap serverBootstrap = new ServerBootstrap();
-            serverBootstrap.group(bossFroup,wokerGroup).channel(NioSctpServerChannel.class)
+            serverBootstrap.group(bossFroup,wokerGroup).channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
                     .childHandler(new WebSocketChannelInitializer());
             ChannelFuture channelFuture = serverBootstrap.bind(new InetSocketAddress(8877)).sync();
             channelFuture.channel().closeFuture().sync();
         }catch(Exception e){
-            e.getStackTrace();
+            System.out.println(e.getMessage());
         }finally{
             bossFroup.shutdownGracefully();
             wokerGroup.shutdownGracefully();
